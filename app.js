@@ -21,7 +21,7 @@ const listingRouter=require("./routes/listing.js");
 const reviewsRouter=require("./routes/review.js");
 const userRouter=require("./routes/user.js");
 
-const dbUrl = process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/wanderlust";  
+const dbUrl = process.env.ATLASDB_URL ;  
 
 if (!dbUrl) {
     console.error("FATAL ERROR: MONGO URL IS NOT DEFINED!!");
@@ -57,7 +57,7 @@ const store = MongoStore.create({
 });
 
 
-store.on("error",()=>{
+store.on("error",(err)=>{
     console.log("ERROR in MONGO SESSION STORE",err);
 });
 
