@@ -21,8 +21,12 @@ const listingRouter=require("./routes/listing.js");
 const reviewsRouter=require("./routes/review.js");
 const userRouter=require("./routes/user.js");
 
-const dbUrl= process.env.ATLASDB_URL;   
+const dbUrl = process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/wanderlust";  
 
+if (!dbUrl) {
+    console.error("FATAL ERROR: MONGO URL IS NOT DEFINED!!");
+    process.exit(1);
+}
 
 main().then(()=>{
     console.log("connected ot db");
@@ -41,10 +45,13 @@ app.use(methodOverride("_method"));
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
 
+
+
+
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     crypto: {
-        secret:process.env.SECRET,
+        secret:process.env.SECRET || "thisshouldbeabettersecret",
     },
     touchAfter: 24 * 3600,
 });
@@ -59,7 +66,7 @@ const sessionOptions={
     secret:process.env.SECRET,
     resave: false,
     saveUninitialized:true,
-    Cookie:{
+    cookie:{
         expires:Date.now()+7*24*60*60*1000,
         maxAge:7*24*60*60*1000,
         httpOnly:true,
